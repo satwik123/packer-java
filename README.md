@@ -1,1 +1,1 @@
-# packer-java
+# packer-java-jenkins integration
