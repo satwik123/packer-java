@@ -2,10 +2,9 @@
   "builders": [{
     "type": "docker",
     "image": "maven:3.6.0-jdk-11-slim",
-    "commit": "true",
+    "discard": "true",
     "changes": [
-    "WORKDIR /",
-    "ENTRYPOINT [\"docker-entrypoint.sh\"]"
+    "WORKDIR /"
   ]
   }],
   "provisioners": [
@@ -25,36 +24,18 @@
     },
     {
     "type": "file",
-    "source": "docker-entrypoint.sh",
-    "destination": "/"
-    },
-    {
-    "type": "file",
     "source": "settings.xml",
     "destination": "/usr/share/maven/conf/"
     },
     {
     "type": "shell",
-    "inline": ["mvn -Pspring-deploy deploy"]
+    "inline": ["mvn install"]
     },
     {
-    "type": "shell",
-    "inline": ["mv target/SpringExample-2.0.3-SNAPSHOT.jar app.jar"]
+      "type": "file",
+      "source": "target/sample.war",
+      "destination": "/root/packer-java/packer-java/",
+      "direction": "download"
     }
-   ],
-  "post-processors": [
-    [
-      {
-        "type": "docker-tag",
-        "repository": "satwikmukherjee/runner-poc",
-        "tag": "{{timestamp}}"
-      },
-      {
-        "type": "docker-push",
-	"login": "true",
-	"login_username": "satwikmukherjee",
-    	"login_password": "Abcd@123"
-      }
-    ]
-  ]
+   ]
 }
